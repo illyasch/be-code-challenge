@@ -1,0 +1,36 @@
+version: "3"
+services:
+  challenge:
+    image: challenge:dev
+    ports:
+      - "8080:8080"
+    environment:
+      CHALLENGE_DB_HOST: db
+      CHALLENGE_DB_PORT: 5432
+      CHALLENGE_DB_USER: test
+      CHALLENGE_DB_PASSWORD: test
+      CHALLENGE_DB_NAME: eth
+    depends_on:
+      - db
+
+  test:
+    build:
+      context: ..
+      dockerfile: ./infra/test.Dockerfile
+    environment:
+      CHALLENGE_DB_HOST: db
+      CHALLENGE_DB_PORT: 5432
+      CHALLENGE_DB_USER: test
+      CHALLENGE_DB_PASSWORD: test
+      CHALLENGE_DB_NAME: eth
+    depends_on:
+      - db
+
+  db:
+    image: glassnode/code-challenge-2020-database:latest
+    environment:
+      POSTGRES_DB: eth
+      POSTGRES_USER: test
+      POSTGRES_PASSWORD: test
+    ports:
+      - "5432:5432"
